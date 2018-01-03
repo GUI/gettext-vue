@@ -1,6 +1,6 @@
-# gettext-ejs
+# gettext-vue
 
-Extract translatable strings from [Vue](https://github.com/tj/ejs) files. By default, looks for the keywords `$t`, `$gettext`, and `$ngettext`.
+Extract translatable strings from [Vue](https://vuejs.org) files. By default, looks for the keywords `$t`, `$gettext`, and `$ngettext`.
 
 It can be used stand-alone or through [gmarty/gettext](https://github.com/gmarty/xgettext).
 

@@ -57,9 +57,9 @@ function Parser(customKeywordSpec) {
 }
 
 /**
- * Given a EJS template string returns the list of i18n strings.
+ * Given a Vue file string returns the list of i18n strings.
  *
- * @param String template The content of a EJS template.
+ * @param String template The content of a Vue file.
  * @return Object The list of translatable strings, the line(s) on which each
  * appears and an optional plural form.
  */
