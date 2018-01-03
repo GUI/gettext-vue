@@ -2,7 +2,23 @@
 
 Extract translatable strings from [Vue](https://vuejs.org) files. By default, looks for the keywords `$t`, `$gettext`, and `$ngettext`.
 
-It can be used stand-alone or through [gmarty/gettext](https://github.com/gmarty/xgettext).
+It can be used stand-alone or through [xgettext-template](https://github.com/gmarty/xgettext).
+
+## Installation
+
+To install and use with [xgettext-template](https://github.com/gmarty/xgettext):
+
+```sh
+npm install -g xgettext-template gettext-vue
+```
+
+## Usage
+
+```sh
+xgettext-template -L Vue [INPUTFILE]...
+```
+
+See [xgettext-template's usage](https://github.com/gmarty/xgettext#usage) for more details.
 
 ## API
 
