@@ -1,0 +1,31 @@
+{
+  "name": "gettext-vue",
+  "version": "0.1.0",
+  "description": "Extract translatable strings from Vue files",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint index.js"
+  },
+  "repository": "https://github.com/GUI/gettext-vue.git",
+  "keywords": [
+    "vue",
+    "gettext",
+    "i18n",
+    "translate",
+    "translation"
+  ],
+  "author": "Nick Muerdter",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GUI/gettext-vue/issues"
+  },
+  "homepage": "https://github.com/GUI/gettext-vue",
+  "devDependencies": {
+    "eslint": "^4.14.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.8.0"
+  },
+  "engines": {
+    "node": ">=6"
+  }
+}
