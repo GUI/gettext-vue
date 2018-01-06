@@ -7,29 +7,7 @@ function trim(str) {
   return str.replace(/^\s+|\s+$/g, '');
 }
 function trimQuotes(str) {
-  return str.replace(/^['"]|['"]$/g, '');
-}
-function isQuote(chr) {
-  return /['"]/.test(chr);
-}
-function groupParams(result, part) {
-  if (result.length > 0) {
-    const last = result[result.length - 1];
-    const firstChar = last[0];
-    const lastChar = last[last.length - 1];
-
-    if (isQuote(firstChar) && (!isQuote(lastChar) || last[last.length - 2] === '\\')) {
-      // merge with previous
-      // eslint-disable-next-line no-param-reassign
-      result[result.length - 1] += `,${part}`;
-    } else {
-      result.push(part);
-    }
-  } else {
-    result.push(part);
-  }
-
-  return result;
+  return str.replace(/^['"`]|['"`]$/g, '');
 }
 
 /**
@@ -38,9 +16,9 @@ function groupParams(result, part) {
  */
 function Parser(customKeywordSpec) {
   const keywordSpec = customKeywordSpec || {
-    '$t': [0],
-    '$gettext': [0],
-    '$ngettext': [0, 1],
+    $t: [0],
+    $gettext: [0],
+    $ngettext: [0, 1],
   };
 
   if (typeof keywordSpec !== 'object') {
@@ -48,12 +26,37 @@ function Parser(customKeywordSpec) {
   }
 
   this.keywordSpec = keywordSpec;
+
+  // String parameter in different quotes (single, double, and template
+  // literals). Taking into account backslash escapes in the quotes.
+  const stringPatternGroup = [
+    '"((?:\\\\.|[^"\\\\])*)"',
+    '|',
+    '\'((?:\\\\.|[^\'\\\\])*)\'',
+    '|',
+    '`((?:\\\\.|[^`\\\\])*)`',
+  ].join('');
+
+  this.stringPattern = new RegExp(`(${stringPatternGroup})`, 'g');
+
+  /* eslint-disable indent */
   this.expressionPattern = new RegExp([
+    // Function name
     `(${Object.keys(keywordSpec).map(escapeRegExp).join('|')})`,
-    '\\(',
-    '([\\s\\S]*?)',
-    '\\)',
+    // Opening parentheses.
+    '\\s*\\(\\s*',
+    '(',
+      // String parameter, followed by an optional comma.
+      '(?:',
+        // String parameter in different quotes (single, double, and template
+        // literals).
+        `(?:${stringPatternGroup})`,
+        // Optional comma for multiple parameters.
+        '(?:\\s*,\\s*)?',
+      ')+',
+    ')',
   ].join(''), 'g');
+  /* eslint-enable indent */
 }
 
 /**
@@ -70,7 +73,7 @@ Parser.prototype.parse = function parse(template) {
   // eslint-disable-next-line no-cond-assign
   while ((match = this.expressionPattern.exec(template)) !== null) {
     const keyword = match[1];
-    const params = match[2].split(',').reduce(groupParams, []).map(trim).map(trimQuotes);
+    const params = match[2].match(this.stringPattern).map(trim).map(trimQuotes);
     const msgid = params[this.keywordSpec[keyword][0]];
 
     result[msgid] = result[msgid] || { line: [] };
