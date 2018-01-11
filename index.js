@@ -16,9 +16,34 @@ function trimQuotes(str) {
  */
 function Parser(customKeywordSpec) {
   const keywordSpec = customKeywordSpec || {
-    $t: [0],
-    $gettext: [0],
-    $ngettext: [0, 1],
+    $t: {
+      msgid: 0,
+    },
+    $gettext: {
+      msgid: 0,
+    },
+    $dgettext: {
+      msgid: 1,
+    },
+    $dcgettext: {
+      msgid: 1,
+    },
+    $ngettext: {
+      msgid: 0,
+      msgid_plural: 1,
+    },
+    $dngettext: {
+      msgid: 1,
+      msgid_plural: 2,
+    },
+    $pgettext: {
+      msgctxt: 0,
+      msgid: 1,
+    },
+    $dpgettext: {
+      msgctxt: 1,
+      msgid: 2,
+    },
   };
 
   if (typeof keywordSpec !== 'object') {
@@ -74,13 +99,39 @@ Parser.prototype.parse = function parse(template) {
   while ((match = this.expressionPattern.exec(template)) !== null) {
     const keyword = match[1];
     const params = match[2].match(this.stringPattern).map(trim).map(trimQuotes);
-    const msgid = params[this.keywordSpec[keyword][0]];
 
-    result[msgid] = result[msgid] || { line: [] };
-    result[msgid].line.push(template.substr(0, match.index).split(newline).length);
+    const spec = this.keywordSpec[keyword];
+    const msgidIndex = spec.msgid;
+    const msgid = params[msgidIndex];
+    if (msgid) {
+      let key = msgid;
 
-    if (this.keywordSpec[keyword].length > 1) {
-      result[msgid].plural = result[msgid].plural || params[this.keywordSpec[keyword][1]];
+      const contextIndex = spec.msgctxt;
+      let context;
+      if (contextIndex !== undefined) {
+        context = params[contextIndex];
+        key = context + String.fromCharCode(4) + key;
+      }
+
+      if (result[key] === undefined) {
+        result[key] = { line: [] };
+      }
+
+      result[key].msgctxt = context;
+      result[key].msgid = msgid;
+      result[key].line.push(template.substr(0, match.index).split(newline).length);
+      result[key].line.sort();
+
+      const pluralIndex = spec.msgid_plural;
+      if (pluralIndex !== undefined) {
+        const plural = params[pluralIndex];
+        const existingPlural = result[key].plural;
+        if (plural && existingPlural && existingPlural !== plural) {
+          throw new Error(`Incompatible plural definitions for msgid "${msgid}" ("${existingPlural}" and "${plural}")`);
+        }
+
+        result[key].plural = plural;
+      }
     }
   }
 
