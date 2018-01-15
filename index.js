@@ -9,6 +9,9 @@ function trim(str) {
 function trimQuotes(str) {
   return str.replace(/^['"`]|['"`]$/g, '');
 }
+function unescapeQuotes(str) {
+  return str.replace(/\\(['"])/g, '$1');
+}
 
 /**
  * Constructor
@@ -98,7 +101,7 @@ Parser.prototype.parse = function parse(template) {
   // eslint-disable-next-line no-cond-assign
   while ((match = this.expressionPattern.exec(template)) !== null) {
     const keyword = match[1];
-    const params = match[2].match(this.stringPattern).map(trim).map(trimQuotes);
+    const params = match[2].match(this.stringPattern).map(trim).map(trimQuotes).map(unescapeQuotes);
 
     const spec = this.keywordSpec[keyword];
     const msgidIndex = spec.msgid;
