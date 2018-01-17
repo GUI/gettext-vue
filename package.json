@@ -3,8 +3,12 @@
   "version": "0.3.0",
   "description": "Extract translatable strings from Vue files",
   "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
   "scripts": {
-    "lint": "eslint index.js"
+    "pretest": "eslint index.js",
+    "test": "ava ./test/test.js"
   },
   "repository": "https://github.com/GUI/gettext-vue.git",
   "keywords": [
@@ -21,6 +25,7 @@
   },
   "homepage": "https://github.com/GUI/gettext-vue",
   "devDependencies": {
+    "ava": "^0.24.0",
     "eslint": "^4.14.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.8.0"
