@@ -2,23 +2,42 @@
 
 Extract translatable strings from [Vue](https://vuejs.org) files. By default, looks for the keywords `$t`, `$gettext`, and `$ngettext`.
 
-It can be used stand-alone or through [xgettext-template](https://github.com/gmarty/xgettext).
-
 ## Installation
 
-To install and use with [xgettext-template](https://github.com/gmarty/xgettext):
-
 ```sh
-npm install -g xgettext-template gettext-vue
+npm install -g gettext-vue
 ```
 
 ## Usage
 
 ```sh
-xgettext-template -L Vue [INPUTFILE]...
+xgettext-vue [OPTION] [INPUTFILE]...
 ```
 
-See [xgettext-template's usage](https://github.com/gmarty/xgettext#usage) for more details.
+#### Options
+
+```
+Input file location:
+  -f, --files-from  get list of input files from FILE
+  -D, --directory   add DIRECTORY to list for input files search[default: ["."]]
+
+Output file location:
+  -o, --output  write output to specified file          [default: "messages.po"]
+
+Input file interpretation:
+  --from-code  encoding of input files                        [default: "ascii"]
+
+Operation mode:
+  -j, --join-existing  join messages with existing file         [default: false]
+
+Output details:
+  --force-po     write PO file even if empty                    [default: false]
+  --no-location  do not write '#: filename:line' lines          [default: false]
+
+Informative output:
+  -h, --help     display this help and exit                            [boolean]
+  -V, --version  output version information and exit                   [boolean]
+```
 
 ## API
 
@@ -58,4 +77,4 @@ It returns an object with this structure:
 
 ## Credits
 
-Largely based on [gettext-ejs](https://github.com/pekala/gettext-ejs).
+Largely based on [gettext-ejs](https://github.com/pekala/gettext-ejs) and [xgettext-template](https://github.com/gmarty/xgettext)

@@ -1,6 +1,6 @@
-import Parser from '..';
-import fs from 'fs';
-import test from 'ava';
+const Parser = require('..');
+const fs = require('fs');
+const test = require('ava');
 
 test('default', t => {
     t.deepEqual((new Parser()).keywordSpec.$t, { msgid : 0 },

@@ -1,5 +1,11 @@
 # gettext-vue Change Log
 
+## 0.4.0 - 2020-03-05
+
+### Added
+
+- Add `xgettext-vue` binary (extracted from xgettext-template) to eliminate dependency on xgettext-template (and incompatibility issues with newer versions of xgettext-template).
+
 ## 0.3.1 - 2018-01-16
 
 ### Fixed

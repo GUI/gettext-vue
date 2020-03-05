@@ -1,0 +1,94 @@
+#!/usr/bin/env node
+'use strict';
+
+// Based on https://github.com/gmarty/xgettext
+
+const xgettext = require('../src/xgettext');
+const pkg = require('../package.json');
+const name = Object.keys(pkg.bin)[0];
+
+const encodings = ['utf8', 'ascii', 'base64'];
+
+const argv = require('yargs')
+  .usage([
+    'Usage: ' + name + ' [OPTION] [INPUTFILE]...',
+    '',
+    pkg.description
+  ].join('\n'))
+  .alias({
+    f: 'files-from',
+    D: 'directory',
+    o: 'output',
+    j: 'join-existing',
+    h: 'help',
+    V: 'version'
+  })
+  .describe({
+    'files-from': 'get list of input files from FILE',
+    directory: 'add DIRECTORY to list for input files search',
+    output: 'write output to specified file',
+    'from-code': 'encoding of input files',
+    'join-existing': 'join messages with existing file',
+    'force-po': 'write PO file even if empty',
+    'no-location': 'do not write \'#: filename:line\' lines'
+  })
+  .default({
+    directory: ['.'],
+    output: 'messages.po',
+    'from-code': 'ascii',
+    'join-existing': false,
+    'force-po': false,
+    'no-location': false
+  })
+  .group(['files-from', 'directory'], 'Input file location:')
+  .group(['output'], 'Output file location:')
+  .group(['from-code'], 'Input file interpretation:')
+  .group(['join-existing'], 'Operation mode:')
+  .group(['force-po', 'no-location'], 'Output details:')
+  .group(['help', 'version'], 'Informative output:')
+  .version('version', 'output version information and exit', `${pkg.name} ${pkg.version}`)
+  .help('help', 'display this help and exit')
+  .check(function (argv) {
+    argv['from-code'] = argv['from-code'].toLowerCase().replace(/\W/g, '');
+
+    if (encodings.indexOf(argv['from-code']) < 0) {
+      throw new Error(`${pkg.name}: encoding of input files must be either utf8, ascii or base64`);
+    }
+
+    if (!argv['files-from'] && argv._.length === 0) {
+      return pkg.name + ': no input file given';
+    }
+
+    return true;
+  })
+  .epilogue('Report bugs to ' + pkg.bugs.url)
+  .showHelpOnFail(false, `Try '${pkg.name} --help' for more information.`)
+  .argv;
+
+let input = argv._;
+delete argv._;
+
+const run = function (subject) {
+  xgettext(subject, argv, po => {
+    if (po && (argv.output === '-' || argv.output === '/dev/stdout')) {
+      process.stdout.write(po);
+    }
+  });
+};
+
+if (input[0] === '-') {
+  const stdin = process.stdin;
+
+  input = '';
+
+  stdin
+    .on('data', chunk => {
+      input += chunk;
+    })
+    .on('end', () => {
+      run(input);
+    })
+    .setEncoding(argv['from-code']);
+} else {
+  run(input);
+}
