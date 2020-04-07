@@ -1,6 +1,6 @@
 {
   "name": "gettext-vue",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Extract translatable strings from Vue files",
   "main": "src/parser.js",
   "bin": {
