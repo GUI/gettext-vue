@@ -103,6 +103,7 @@ function xgettext (input, options, cb) {
           context[msgid].comments.reference = (context[msgid].comments.reference || '')
             .split('\n')
             .concat(strings[key].line.map(linePrefixer))
+            .sort()
             .join('\n')
             .trim('\n');
         }
