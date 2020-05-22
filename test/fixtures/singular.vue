@@ -6,6 +6,7 @@
         <p>{{ $t("\"double escape\"") }}</p>
         <p>{{ $t("word \"escaped, word\", with comma") }}</p>
         <p>{{ $t("ending with an escaped quote\"") }}</p>
+        <p>{{ $ngettext('plural string', num) }}</p>
     </div>
 </template>
 
@@ -15,7 +16,8 @@
             return {
                 t1: this.$t('data \'single escape\''),
                 t2: this.$t("data \"double escape\""),
-                t3: this.$t("Description")
+                t3: this.$t("Description"),
+                num: 5
             };
         }
     }

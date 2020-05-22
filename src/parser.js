@@ -80,7 +80,7 @@ function Parser(customKeywordSpec) {
         // literals).
         `(?:${stringPatternGroup})`,
         // Optional comma for multiple parameters.
-        '(?:\\s*,\\s*)?',
+        '(?:\\s*,\\s*)?((?:\\\\.|[^()\\\\])*)?',
       ')+',
     ')',
   ].join(''), 'g');
@@ -97,12 +97,13 @@ function Parser(customKeywordSpec) {
 Parser.prototype.parse = function parse(template) {
   const result = {};
   let match;
-
   // eslint-disable-next-line no-cond-assign
   while ((match = this.expressionPattern.exec(template)) !== null) {
     const keyword = match[1];
     const params = match[2].match(this.stringPattern).map(trim).map(trimQuotes).map(unescapeQuotes);
-
+    if(match[6]) {
+      params.push(match[6].trim())
+    }
     const spec = this.keywordSpec[keyword];
     const msgidIndex = spec.msgid;
     const msgid = params[msgidIndex];
